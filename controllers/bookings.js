@@ -10,7 +10,7 @@ const listBookings = (req, res) => {
         return res.status(422).send("No Bookings Found.")
       }
       return BookingModel.find({ status }).countDocuments()
-        .then(count => res.status(200).send({ list: doc, count }))
+        .then(count => res.status(200).send({ dataList: doc, count }))
     })
     .catch(err => {
       return res.status(422).send(err)

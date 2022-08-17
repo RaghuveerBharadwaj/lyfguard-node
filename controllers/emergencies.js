@@ -10,7 +10,7 @@ const listEmergencies = (req, res) => {
         return res.status(422).send("No Emergencies Found.")
       }
       return EmergencyModel.find({ status }).countDocuments()
-        .then(count => res.status(200).send({ list: doc, count }))
+        .then(count => res.status(200).send({ dataList: doc, count }))
     })
     .catch(err => {
       return res.status(422).send(err)

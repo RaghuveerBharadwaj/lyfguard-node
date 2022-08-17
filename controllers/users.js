@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt')
 const UserModel = require('../models/user.model')
-const { generateToken } = require('../utils/jwt')
+const { generateToken, generateOTP } = require('../utils/jwt')
 
 const listUsers = (req, res) => {
   const { limit = 10, skip = 0, role = 'user', status = 1 } = req.body;
@@ -12,7 +12,7 @@ const listUsers = (req, res) => {
         return res.status(422).send("No Users Found.")
       }
       return UserModel.find({ role, status }).countDocuments()
-        .then(count => res.status(200).send({ list: doc, count }))
+        .then(count => res.status(200).send({ dataList: doc, count }))
     })
     .catch(err => {
       return res.status(422).send(err)
@@ -74,7 +74,7 @@ const deleteUser = (req, res) => {
 }
 
 const login = async (req, res) => {
-  UserModel.findOne({ email: req.body.email })
+  UserModel.findOne({ phone: req.body.phone })
     .then(async (doc) => {
       if (!doc) {
         return res.status(422).send("No Users Found.")
@@ -99,7 +99,7 @@ const login = async (req, res) => {
 }
 
 const loginByOTP = async (req, res) => {
-  UserModel.findOne({ email: req.body.email })
+  UserModel.findOne({ phone: req.body.phone })
     .then(async (doc) => {
       if (!doc) {
         return res.status(422).send("No Users Found.")
@@ -113,6 +113,20 @@ const loginByOTP = async (req, res) => {
       data['token'] = generateToken(data)
       res.cookie('lyfguard', data['token'])
       return res.status(200).send(data)
+    })
+    .catch(err => {
+      console.log(err)
+      return res.status(422).send(err)
+    })
+}
+
+const sendOTP = async (req, res) => {
+  UserModel.findOne({ phone: req.body.phone })
+    .then(async (doc) => {
+      if (!doc) {
+        return res.status(422).send("No Users Found.")
+      }
+      return res.status(200).send({ otp: '0000' })
     })
     .catch(err => {
       console.log(err)
@@ -134,4 +148,4 @@ const listUserOptions = (req, res) => {
     })
 }
 
-module.exports = { listUsers, createUser, viewUser, editUser, deleteUser, login, loginByOTP, listUserOptions }
+module.exports = { listUsers, createUser, viewUser, editUser, deleteUser, login, loginByOTP, listUserOptions, sendOTP }

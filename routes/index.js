@@ -93,6 +93,7 @@ router.delete('/service/delete/:id', auth, serviceController.deleteService)
 // User Routes
 router.post('/login', userController.login)
 router.post('/loginOTP', userController.loginByOTP)
+router.post('/sendOTP', userController.sendOTP)
 router.post('/user/options', userController.listUserOptions)
 router.post('/user/list', userController.listUsers)
 router.post('/user/create', userController.createUser)
